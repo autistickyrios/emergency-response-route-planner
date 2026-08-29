@@ -1,10 +1,15 @@
 from fastapi import FastAPI
 
+from backend.app.api.routes import router as routes_router
+
+
 app = FastAPI(
     title="Emergency Response Route Planner",
     description="AI-powered emergency response routing system",
     version="1.0.0",
 )
+
+app.include_router(routes_router)
 
 
 @app.get("/")
