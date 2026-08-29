@@ -1,3 +1,4 @@
+from backend.app.algorithms.astar import astar
 from backend.app.algorithms.graph import Graph
 from backend.app.algorithms.bfs import bfs
 from backend.app.algorithms.dfs import dfs
@@ -95,5 +96,57 @@ def test_dijkstra_avoids_blocked_roads():
     )
 
     path = dijkstra(graph, "A", "D")
+
+    assert path == ["A", "C", "D"]
+
+def test_astar_finds_lowest_cost_path():
+    graph = Graph()
+
+    graph.add_node("A", "Station", 19.0000, 72.0000)
+    graph.add_node("B", "Road B", 19.0010, 72.0010)
+    graph.add_node("C", "Road C", 19.0020, 72.0000)
+    graph.add_node("D", "Emergency", 19.0030, 72.0010)
+
+    graph.add_edge("A", "B", 1.0, 2.0)
+    graph.add_edge("B", "D", 1.0, 2.0)
+
+    graph.add_edge("A", "C", 1.0, 2.0)
+    graph.add_edge("C", "D", 1.0, 10.0)
+
+    path = astar(graph, "A", "D")
+
+    assert path == ["A", "B", "D"]
+
+def test_astar_avoids_blocked_roads():
+    graph = Graph()
+
+    graph.add_node("A", "Station", 19.0000, 72.0000)
+    graph.add_node("B", "Blocked Junction", 19.0010, 72.0010)
+    graph.add_node("C", "Alternative Junction", 19.0020, 72.0000)
+    graph.add_node("D", "Emergency", 19.0030, 72.0010)
+
+    graph.add_edge(
+        "A",
+        "B",
+        distance=1.0,
+        travel_time=1.0,
+        blocked=True,
+    )
+
+    graph.add_edge(
+        "A",
+        "C",
+        distance=2.0,
+        travel_time=3.0,
+    )
+
+    graph.add_edge(
+        "C",
+        "D",
+        distance=2.0,
+        travel_time=3.0,
+    )
+
+    path = astar(graph, "A", "D")
 
     assert path == ["A", "C", "D"]
