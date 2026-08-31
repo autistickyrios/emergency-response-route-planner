@@ -5,9 +5,6 @@ from backend.app.models.ambulance import (
     AmbulanceStatus,
 )
 
-from backend.app.models.ambulance import Ambulance
-
-
 class AmbulanceService:
 
     def __init__(self):

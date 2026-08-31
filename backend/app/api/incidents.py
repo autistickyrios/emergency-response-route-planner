@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from backend.app.models.incident import (
     Incident,
     IncidentCreate,
+    IncidentStatus,
 )
 from backend.app.services.incident_service import (
     incident_service,
@@ -62,7 +63,7 @@ def get_incident(
 )
 def update_incident_status(
     incident_id: str,
-    status: str,
+    status: IncidentStatus,
 ):
 
     if status not in {

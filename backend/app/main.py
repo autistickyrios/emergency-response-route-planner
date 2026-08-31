@@ -11,6 +11,17 @@ from backend.app.api.dispatch import (
     router as dispatch_router,
 )
 
+from backend.app.api.hospitals import (
+    router as hospitals_router,
+)
+
+from backend.app.api.response import (
+    router as response_router,
+)
+
+from backend.app.api.lifecycle import (
+    router as lifecycle_router,
+)
 
 app = FastAPI(
     title="Emergency Response Route Planner",
@@ -22,6 +33,10 @@ app.include_router(routes_router)
 app.include_router(incidents_router)
 app.include_router(ambulances_router)
 app.include_router(dispatch_router)
+app.include_router(hospitals_router)
+app.include_router(response_router)
+app.include_router(lifecycle_router)
+
 
 
 @app.get("/")

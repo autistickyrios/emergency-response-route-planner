@@ -21,6 +21,8 @@ SeverityLevel = Literal[
 IncidentStatus = Literal[
     "active",
     "dispatched",
+    "at_scene",
+    "transporting",
     "resolved",
 ]
 

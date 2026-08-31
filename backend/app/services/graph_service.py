@@ -48,12 +48,34 @@ def create_city_graph() -> Graph:
         72.8800,
     )
 
-    # Destination
+
+    # Hospitals
     graph.add_node(
-        "hospital_01",
-        "City Emergency Hospital",
-        19.0800,
-        72.8840,
+    "hospital_01",
+    "City Emergency Hospital",
+    19.0800,
+    72.8840,
+        )
+
+    graph.add_node(
+    "hospital_02",
+    "East General Hospital",
+    19.0735,
+    72.8860,
+    )
+
+    graph.add_node(
+    "hospital_03",
+    "West Trauma Center",
+    19.0705,
+    72.8700,
+    )
+
+    graph.add_node(
+    "hospital_04",
+    "South Medical Center",
+    19.0685,
+    72.8780,
     )
 
     # Roads
@@ -118,6 +140,27 @@ def create_city_graph() -> Graph:
         "hospital_01",
         distance=0.8,
         travel_time=4.0,
+    )
+
+    graph.add_edge(
+    "junction_02",
+    "hospital_02",
+    distance=0.7,
+    travel_time=3.0,
+    )
+
+    graph.add_edge(
+    "junction_04",
+    "hospital_03",
+    distance=0.6,
+    travel_time=2.5,
+    )
+
+    graph.add_edge(
+    "junction_03",
+    "hospital_04",
+    distance=0.5,
+    travel_time=2.0,
     )
 
     return graph
