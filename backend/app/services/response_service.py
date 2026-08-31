@@ -38,6 +38,11 @@ def create_response_plan(
     ambulance = ambulance_result["ambulance"]
     hospital = hospital_result["hospital"]
 
+    incident_service.assign_ambulance(
+    incident_id,
+    ambulance.id,
+    )
+
     total_distance = (
         ambulance_result["distance"]
         + hospital_result["distance"]

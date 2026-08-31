@@ -8,6 +8,21 @@ from backend.app.models.incident import (
 
 class IncidentService:
 
+    def assign_ambulance(
+    self,
+    incident_id: str,
+    ambulance_id: str,
+    ) -> Incident | None:
+
+        incident = self.incidents.get(incident_id)
+
+        if incident is None:
+            return None
+
+        incident.assigned_ambulance_id = ambulance_id
+
+        return incident
+
     def __init__(self):
         self.incidents: Dict[str, Incident] = {}
         self._next_id = 1

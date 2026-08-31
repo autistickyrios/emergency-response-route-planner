@@ -1,8 +1,5 @@
 from fastapi import APIRouter, HTTPException
 
-from backend.app.services.ambulance_service import (
-    ambulance_service,
-)
 from backend.app.services.incident_service import (
     incident_service,
 )
@@ -51,15 +48,5 @@ def generate_response_plan(
                 "emergency response plan."
             ),
         )
-
-    ambulance_service.update_status(
-        result["ambulance"]["id"],
-        "dispatched",
-    )
-
-    incident_service.update_status(
-        incident_id,
-        "dispatched",
-    )
 
     return result

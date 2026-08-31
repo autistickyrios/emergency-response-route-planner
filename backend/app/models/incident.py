@@ -34,6 +34,7 @@ class Incident(BaseModel):
     location: str
     status: IncidentStatus = "active"
     description: str = ""
+    assigned_ambulance_id: str | None = None
 
 
 class IncidentCreate(BaseModel):

@@ -54,6 +54,12 @@ def ambulance_arrived(
         "at_scene",
     )
 
+    if incident.assigned_ambulance_id:
+        ambulance_service.update_status(
+        incident.assigned_ambulance_id,
+        "busy",
+    )
+
     return {
         "incident_id": incident_id,
         "status": "at_scene",
@@ -112,6 +118,12 @@ def resolve_incident(
     incident_service.update_status(
         incident_id,
         "resolved",
+    )
+
+    if incident.assigned_ambulance_id:
+        ambulance_service.update_status(
+        incident.assigned_ambulance_id,
+        "available",
     )
 
     return {
