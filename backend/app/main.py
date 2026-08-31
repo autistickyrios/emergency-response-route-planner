@@ -3,6 +3,14 @@ from fastapi import FastAPI
 from backend.app.api.routes import router as routes_router
 from backend.app.api.incidents import router as incidents_router
 
+from backend.app.api.ambulances import (
+    router as ambulances_router,
+)
+
+from backend.app.api.dispatch import (
+    router as dispatch_router,
+)
+
 
 app = FastAPI(
     title="Emergency Response Route Planner",
@@ -12,6 +20,8 @@ app = FastAPI(
 
 app.include_router(routes_router)
 app.include_router(incidents_router)
+app.include_router(ambulances_router)
+app.include_router(dispatch_router)
 
 
 @app.get("/")
