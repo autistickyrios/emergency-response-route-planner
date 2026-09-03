@@ -1,268 +1,205 @@
-# 🚑 Emergency Response Route Planner
+# Emergency Response Route Planner
 
-An AI-powered emergency response routing system that helps dispatch the most suitable ambulance to an emergency, calculate efficient routes, select an appropriate hospital, and manage the complete emergency response lifecycle.
+An intelligent emergency response coordination system that selects suitable ambulances, calculates optimized routes using A* graph search, recommends hospitals, and manages the complete emergency response lifecycle.
 
-## 📌 Overview
+[Live Demo](https://emergency-response-route-planner.vercel.app) · [API Documentation](https://emergency-response-route-planner.onrender.com/docs)
 
-The Emergency Response Route Planner is a full-stack application designed to assist emergency response teams in making faster and more efficient dispatch decisions.
+> Academic project using a simulated road network and emergency-response dataset.
 
-The system takes an emergency incident as input and uses graph-based route planning and intelligent resource selection to:
+## Overview
 
-- Identify the best available ambulance
-- Calculate an efficient route to the incident
-- Dispatch the ambulance
-- Track ambulance and incident status
-- Select a suitable hospital
-- Calculate the route from the incident to the hospital
-- Manage the incident through arrival, transport, and resolution
+Emergency response teams need to make several decisions quickly:
 
-## ✨ Key Features
+- Which ambulance should respond?
+- What is the fastest available route?
+- Which hospital should receive the patient?
+- How should the response be tracked from dispatch to resolution?
 
-- 🚨 Emergency incident creation
-- 🚑 Ambulance availability tracking
-- 🧠 Automated emergency response planning
-- 🗺️ A* pathfinding for route optimization
-- ⚡ Intelligent ambulance selection based on estimated response time
-- 🏥 Hospital selection based on emergency requirements
-- 🔄 Complete incident lifecycle management
-- 📊 Emergency response dashboard
-- 🔌 RESTful API architecture
-- 🌐 React frontend with FastAPI backend
+This project models that workflow as a centralized emergency operations control center.
 
-## 🧠 How It Works
+## Features
 
-The system follows this workflow:
+### Incident Management
 
-```text
-Emergency Incident
-       ↓
-Create Incident
-       ↓
-Generate Response Plan
-       ↓
-Find Available Ambulances
-       ↓
-Calculate Routes using A*
-       ↓
-Select Best Ambulance
-       ↓
-Dispatch Ambulance
-       ↓
-Ambulance Arrives
-       ↓
-Begin Transport
-       ↓
-Select Suitable Hospital
-       ↓
-Route to Hospital
-       ↓
-Resolve Incident
-       ↓
-Ambulance Available Again
-```
+Create incidents with:
 
-## 🤖 AI & Algorithms
+- Emergency type
+- Severity
+- Location
+- Call notes
 
-### A* Pathfinding
+### Ambulance Dispatch
 
-The system models the emergency response network as a weighted graph.
+The system evaluates available ambulances and selects the unit with the lowest estimated response time.
 
-Nodes represent locations such as:
+### A* Route Optimization
 
-- Ambulance stations
-- Road junctions
-- Hospitals
-
-Edges represent roads and contain distance and estimated travel time.
-
-A* search is used to find efficient routes between locations while considering the graph structure.
-
-### Ambulance Selection
-
-For each available ambulance, the system calculates a route to the incident and estimates the response time.
-
-The ambulance with the lowest estimated travel time is selected for dispatch.
+Routes are calculated using A* search over a weighted graph representing a simulated road network.
 
 ### Hospital Selection
 
-The system evaluates available hospitals and selects a suitable destination based on the emergency type and routing information.
+The system evaluates available hospitals and generates a route from the incident location to the selected facility.
 
-## 🛠️ Tech Stack
+### Response Lifecycle
 
-### Frontend
+```text
+Incident Created
+       ↓
+Response Plan Generated
+       ↓
+Ambulance Dispatched
+       ↓
+Ambulance Arrives
+       ↓
+Patient Transport
+       ↓
+Incident Resolved
+       ↓
+Ambulance Available
+```
 
-- React
-- Vite
-- JavaScript
-- Axios
-- CSS
+### Fleet Monitoring
 
-### Backend
+The dashboard provides operational visibility into:
 
-- Python
-- FastAPI
-- Pydantic
-- Pytest
+- Available units
+- En-route units
+- Units on assignment
+- Offline units
+- Ambulance capability
+- Medical support level
 
-### Algorithms
+## Architecture
 
-- A* Search
-- Graph-based route planning
-- Resource selection based on estimated travel time
+```text
+                    React + Vite
+                         │
+                         │ REST API
+                         ▼
+                     FastAPI
+                         │
+          ┌──────────────┼──────────────┐
+          ▼              ▼              ▼
+      Incident       Dispatch       Hospital
+      Service         Service        Selection
+                         │
+                         ▼
+                    A* Routing
+                         │
+                         ▼
+                  Weighted Graph
+```
 
-## 📁 Project Structure
+## Routing Algorithm
+
+The routing engine represents the emergency response area as a weighted graph.
+
+Each edge contains simulated distance and travel-time information.
+
+For an ambulance and incident:
+
+1. Find all available ambulances.
+2. Calculate an A* route from each ambulance to the incident.
+3. Compare estimated travel times.
+4. Select the fastest suitable ambulance.
+5. Calculate the route to the selected hospital.
+6. Return the complete response plan.
+
+A* evaluates routes using:
+
+```text
+f(n) = g(n) + h(n)
+```
+
+where:
+
+- `g(n)` is the cost from the starting node.
+- `h(n)` is the estimated cost to the destination.
+- `f(n)` is the estimated total route cost.
+
+## Tech Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, Axios |
+| Backend | Python, FastAPI, Pydantic |
+| Algorithms | A* Search, Graph Traversal |
+| UI | CSS, Lucide Icons |
+| Deployment | Vercel, Render |
+
+## Project Structure
 
 ```text
 emergency-response-route-planner/
-│
 ├── backend/
-│   └── app/
-│       ├── api/
-│       ├── models/
-│       ├── services/
-│       └── main.py
+│   ├── app/
+│   │   ├── api/
+│   │   ├── models/
+│   │   ├── services/
+│   │   └── main.py
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
+│   │   ├── components/
 │   │   ├── pages/
-│   │   ├── services/
-│   │   ├── App.jsx
-│   │   └── main.jsx
+│   │   └── services/
 │   └── package.json
 │
-├── tests/
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
-## 🔌 API Endpoints
+## API
 
-### Incidents
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/ambulances` | Get ambulance fleet |
+| GET | `/api/ambulances/available` | Get available ambulances |
+| GET | `/api/hospitals` | Get hospitals |
+| POST | `/api/incidents` | Create an incident |
+| POST | `/api/response/{incident_id}` | Generate response plan |
+| POST | `/api/dispatch/{incident_id}` | Dispatch ambulance |
+| POST | `/api/incidents/{incident_id}/arrive` | Mark arrival |
+| POST | `/api/incidents/{incident_id}/transport` | Begin transport |
+| POST | `/api/incidents/{incident_id}/resolve` | Resolve incident |
 
-```text
-POST /api/incidents
-```
+## Local Development
 
-Creates a new emergency incident.
-
-### Ambulances
-
-```text
-GET /api/ambulances
-GET /api/ambulances/available
-GET /api/ambulances/{ambulance_id}
-```
-
-Retrieves ambulance information and availability.
-
-### Response Planning
-
-```text
-POST /api/response/{incident_id}
-```
-
-Generates an emergency response plan including ambulance and hospital routing.
-
-### Dispatch
-
-```text
-POST /api/dispatch/{incident_id}
-```
-
-Dispatches the selected ambulance to the incident.
-
-### Incident Lifecycle
-
-```text
-POST /api/incidents/{incident_id}/arrive
-POST /api/incidents/{incident_id}/transport
-POST /api/incidents/{incident_id}/resolve
-```
-
-Updates the incident throughout the emergency response lifecycle.
-
-## 🚀 Running the Project Locally
-
-### 1. Clone the repository
+### Backend
 
 ```bash
-git clone https://github.com/autistickyrios/emergency-response-route-planner.git
-cd emergency-response-route-planner
-```
+cd backend
 
-### 2. Set up the backend
-
-Create a virtual environment:
-
-```bash
 python -m venv .venv
-```
-
-Activate it in Git Bash:
-
-```bash
 source .venv/Scripts/activate
-```
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
+
+uvicorn app.main:app --reload
 ```
 
-Start the FastAPI server:
-
-```bash
-uvicorn backend.app.main:app --reload
-```
-
-Backend:
+API:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Interactive API documentation:
+Swagger:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-### 3. Start the frontend
-
-Open another terminal:
+### Frontend
 
 ```bash
 cd frontend
+
 npm install
 npm run dev
 ```
 
-Frontend:
-
-```text
-http://localhost:5173
-```
-
-## 🧪 Testing
-
-Run the backend tests:
-
-```bash
-python -m pytest
-```
-
-Build the frontend:
-
-```bash
-npm run build
-```
-
-## 🎯 Example Emergency
-
-Example incident:
+## Example Incident
 
 ```json
 {
@@ -273,36 +210,66 @@ Example incident:
 }
 ```
 
-The system then:
+The system then evaluates available resources, calculates routes, selects an ambulance and hospital, and manages the response lifecycle.
 
-1. Creates the emergency incident
-2. Generates a response plan
-3. Finds the best available ambulance
-4. Calculates the route to the incident
-5. Dispatches the ambulance
-6. Tracks ambulance arrival
-7. Begins patient transport
-8. Selects a suitable hospital
-9. Calculates the hospital route
-10. Resolves the incident and makes the ambulance available again
+## Deployment
 
-## 🔮 Future Scope
+The application is deployed as two services:
 
-Possible future improvements include:
+```text
+Vercel
+  │
+  │ HTTPS
+  ▼
+React Frontend
+  │
+  │ REST API
+  ▼
+Render
+  │
+  ▼
+FastAPI Backend
+```
 
-- Real-time map integration
-- Live traffic data
-- GPS-based ambulance tracking
-- Database persistence
-- Machine-learning-based ETA prediction
-- Multi-ambulance coordination
-- Real-time notifications
+## Limitations
+
+This is an academic demonstration system rather than a production emergency-dispatch platform.
+
+- Road network is simulated.
+- Ambulance locations are predefined graph nodes.
+- Traffic data is not real-time.
+- GPS tracking is not implemented.
+- Backend state is currently stored in memory.
+- Data resets when the backend restarts or redeploys.
+- Hospital data is limited for demonstration.
+- Intelligence is currently based on A* search and rule/heuristic-based selection rather than a trained machine-learning model.
+
+## Future Scope
+
+- Real road-network integration
+- Live GPS tracking
+- Real-time traffic data
+- Persistent database
+- Multiple hospitals
+- Hospital capacity and bed availability
+- Dynamic ambulance positioning
+- Real-time WebSocket updates
+- ML-based ETA prediction
+- Historical incident analytics
 - Authentication and role-based access
-- Cloud deployment
-- Dynamic hospital capacity tracking
 
-## 👨‍💻 Project
+## Project Context
 
-**Emergency Response Route Planner**
+Developed as an academic project demonstrating the application of AI concepts, graph search, resource allocation, REST API development, and full-stack software engineering.
 
-Built as an academic full-stack software development project demonstrating emergency resource allocation, graph algorithms, API development, and frontend-backend integration.
+## Author
+
+**Hitesh / LEVENINE**
+
+Bachelor of Vocation — Software Development
+
+GitHub: [@autistickyrios](https://github.com/autistickyrios)
+
+## License
+
+This project is intended for educational and demonstration purposes.
