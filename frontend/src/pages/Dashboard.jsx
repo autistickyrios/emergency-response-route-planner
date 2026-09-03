@@ -1,12 +1,16 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
+
 import {
   getAmbulances,
   createIncident,
   generateResponsePlan,
+  dispatchIncident,
   ambulanceArrived,
   beginTransport,
   resolveIncident,
 } from "../services/api";
+
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -67,34 +71,40 @@ function Dashboard() {
   };
 
   const handleGenerateResponse = async () => {
-    if (!incident) return;
+  if (!incident) return;
 
-    try {
-      setActionLoading(true);
-      setError("");
-      setMessage("");
+  try {
+    setActionLoading(true);
+    setError("");
+    setMessage("");
 
-      const data = await generateResponsePlan(incident.id);
+    // Step 1: Generate the AI response plan
+    const data = await generateResponsePlan(incident.id);
 
-      setResponsePlan(data);
+    setResponsePlan(data);
 
-      setIncident((current) => ({
-        ...current,
-        status: "dispatched",
-        assigned_ambulance_id: data.ambulance.id,
-      }));
+    // Step 2: Actually dispatch the selected ambulance
+    await dispatchIncident(incident.id);
 
-      setMessage("AI response plan generated and ambulance dispatched.");
-      await refreshAmbulances();
-    } catch (err) {
-      console.error(err);
-      setError(
-        err.response?.data?.detail || "Unable to generate response plan."
-      );
-    } finally {
-      setActionLoading(false);
-    }
-  };
+    setIncident((current) => ({
+      ...current,
+      status: "dispatched",
+      assigned_ambulance_id: data.ambulance.id,
+    }));
+
+    setMessage("AI response plan generated and ambulance dispatched.");
+
+    // Step 3: Get the real backend ambulance status
+    await refreshAmbulances();
+  } catch (err) {
+    console.error(err);
+    setError(
+      err.response?.data?.detail || "Unable to generate response plan."
+    );
+  } finally {
+    setActionLoading(false);
+  }
+};
 
   const handleArrive = async () => {
     if (!incident) return;
